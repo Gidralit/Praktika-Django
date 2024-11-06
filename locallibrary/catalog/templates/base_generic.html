@@ -19,12 +19,38 @@
                 {% block sidebar %}
                     <ul class="sidebar-nav">
                         <li><a href="{% url 'index' %}">Домашняя страница</a></li>
-                        <li><a href="">Все книги</a></li>
-                        <li><a href="">Все авторы</a></li>
+                        <li><a href="{% url 'books' %}">Все книги</a></li>
+                        <li><a href="{% url 'authors' %}">Все авторы</a></li>
+                        {% if user.is_authenticated %}
+                        <li>User: {{user.get_username}}</li>
+                        <li><a href="{% url 'my-borrowed' %}">Мои книги взятые прокат</a></li>
+                        <li><a href="{% url 'logout' %}?next={{request.path}}">Выйти из аккаунта</a></li>
+                        {% else %}
+                        <li><a href="{% url 'login' %}?next={{request.path}}">Войти в аккаунт</a></li>
+                        {% endif %}
                     </ul>
                 {% endblock %}
             </div>
-            <div class="col-sm-10">{% block content %}{% endblock %}</div>
+            <div class="col-sm-10">
+                {% block content %}{% endblock %}
+                {% block pagination %}
+                    {% if is_paginated %}
+                        <div class="pagination">
+                            <span class="page-links">
+                                {% if page_obj.has_previous %}
+                                    <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">предыдущая</a>
+                                {% endif %}
+                                <span class="page-current">
+                                    страница {{page_obj.number}} из {{page_obj.paginator.num_pages}}
+                                </span>
+                                {% if page_obj.has_next %}
+                                    <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">следующая</a>
+                                {% endif %}
+                            </span>
+                        </div>
+                    {% endif %}
+                {% endblock %}
+            </div>
         </div>
     </div>
 </body>
