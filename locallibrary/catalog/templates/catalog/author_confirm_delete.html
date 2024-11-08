@@ -1,9 +1,0 @@
-{% extends 'base_generic.html' %}
-{% block content %}
-    <h1>Удалить автора</h1>
-    <p>Вы действительно хотите удалить автора: {{author}}?</p>
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit">Удалить автора</button>
-    </form>
-{% endblock %}
