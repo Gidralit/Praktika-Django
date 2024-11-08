@@ -21,12 +21,21 @@
                         <li><a href="{% url 'index' %}">Домашняя страница</a></li>
                         <li><a href="{% url 'books' %}">Все книги</a></li>
                         <li><a href="{% url 'authors' %}">Все авторы</a></li>
+                        <br>
                         {% if user.is_authenticated %}
                         <li>User: {{user.get_username}}</li>
                         <li><a href="{% url 'my-borrowed' %}">Мои книги взятые прокат</a></li>
+                        <li><a href="{% url 'read-books' %}">Книги прочитанные мной</a></li>
                         <li><a href="{% url 'logout' %}?next={{request.path}}">Выйти из аккаунта</a></li>
                         {% else %}
                         <li><a href="{% url 'login' %}?next={{request.path}}">Войти в аккаунт</a></li>
+                        {% endif %}
+                        <br>
+                        {% if perms.catalog.can_mark_returned %}
+                        <li>Для сотрудников</li>
+                        <li><a href="{% url 'author_create' %}">Добавить автора</a></li>
+                        <li><a href="{% url 'book_create' %}">Добавить книгу</a></li>
+                        <li><a href="{% url 'all-borrowed' %}">Список всех книг которые взяли на прокат</a></li>
                         {% endif %}
                     </ul>
                 {% endblock %}

@@ -1,11 +1,26 @@
 {% extends 'base_generic.html' %}
 {% block content %}
     <h1>Заголовок: {{book.title}}</h1>
-    <p><strong>Автор:</strong> <a href="{% url 'author-detail' book.author.pk %}">{{book.author}}</a></p>
-    <p><strong>Краткое содержание:</strong> <a href="">{{book.summary}}</a></p>
-    <p><strong>ISBN:</strong> <a href="">{{book.isbn}}</a></p>
-    <p><strong>Язык:</strong> <a href="">{{book.language}}</a></p>
+    <p><strong>Авторы:</strong> {{ book.display_authors }} </p>
+    <p><strong>Краткое содержание:</strong> {{book.summary}}</p>
+    <p><strong>ISBN:</strong> <a href="#">{{book.isbn}}</a></p>
+    <p><strong>Язык:</strong>{{book.language}}</p>
     <p><strong>Жанр:</strong> {% for genre in book.genre.adll %}{{ genre }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+    {% if messages %}
+        <ul>
+        {% for message in messages %}
+            <li {% if message.tags %}class="{{message.tags}}"{% endif %}>{{message}}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    <form method="post" action="{% url 'mark_as_read' book.id %}">
+        {% csrf_token %}
+        <button type="submit">Отметить как прочитанное</button>
+    </form>
+    {% if perms.catalog.can_mark_returned %}
+    <p><a href="{% url 'book_delete' book.pk %}">Удалить книгу</a></p>
+    <p><a href="{% url 'book_update' book.pk %}">Отредактировать книгу</a></p>
+    {% endif %}
     <div style="margin-keft:20px;margin-top:20px;">
         <h4>Копии кнгиги:</h4>
         {% for copy in book.bookinstance_set.all %}
