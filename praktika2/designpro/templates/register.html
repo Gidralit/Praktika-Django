@@ -1,0 +1,9 @@
+{% extends 'index.html' %}
+{% block content %}
+asdqwe
+<form action="">
+  {% csrf_token %}
+  {{user_form}}
+  <button type="submit">Зарегистрироваться</button>
+</form>
+{% endblock %}

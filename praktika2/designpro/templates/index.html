@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static '/css/styles.css' %}">
+    {% block title %}<title>Первая страница</title>{% endblock %}
+</head>
+<body>
+  <header>
+    <h1>DESIGN.PRO</h1>
+    <div class="login-out"><a href="">Авторизация</a>/<a href="{% url 'register' %}">Регистрация</a></div>
+  </header>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>
