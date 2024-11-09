@@ -1,0 +1,9 @@
+{% extends 'index.html' %}
+{% block content %}
+<div class="profile-container">
+    <h1>Пользователь: {{user.username}}</h1>
+    <form action="{% url 'logout' %}">
+        <button type="submit">Выйти из аккаунта</button>
+    </form>
+</div>
+{% endblock %}

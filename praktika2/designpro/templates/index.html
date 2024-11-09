@@ -8,10 +8,20 @@
 </head>
 <body>
   <header>
-    <h1>DESIGN.PRO</h1>
-    <div class="login-out"><a href="">Авторизация</a>/<a href="{% url 'register' %}">Регистрация</a></div>
+    <h1><a href="{% url 'home' %}">DESIGN.PRO</a></h1>
+      <ul>
+          <li><a href="{% url 'home' %}">Главная страница</a></li>
+      </ul>
+    <div class="login-out">{% if user.username %}<a href="{% url 'profile' %}">{{user.username}}</a>{% else %}<a href="{% url 'login' %}">Авторизация</a>/<a href="{% url 'register' %}">Регистрация</a>{% endif %}</div>
   </header>
     <main>
+        {% if messages %}
+            <ul>
+            {% for message in messages %}
+                <li>{{message}}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
         {% block content %}
         {% endblock %}
     </main>

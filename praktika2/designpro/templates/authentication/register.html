@@ -1,0 +1,15 @@
+{% extends 'index.html' %}
+{% block content %}
+<div class="register-container">
+  <form method="post">
+    {% csrf_token %}
+    {{user_form.as_p}}
+    <button type="submit">Зарегистрироваться</button>
+  </form>
+      {% if user_form.non_field_errors %}
+      {% for error in user_form.non_field_errors %}
+        <p style="color: red;">{{error}}</p>
+      {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}
