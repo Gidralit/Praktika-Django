@@ -4,6 +4,9 @@
   <form method="post">
     {% csrf_token %}
     {{user_form.as_p}}
+      <div class="">
+          {{ form.captcha.image_base64|safe }}
+      </div>
     <button type="submit">Зарегистрироваться</button>
   </form>
       {% if user_form.non_field_errors %}
