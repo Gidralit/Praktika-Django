@@ -1,9 +1,14 @@
 {% extends 'index.html' %}
 {% block content %}
 <div class="profile-container">
+    {% if user.username %}
     <h1>Пользователь: {{user.username}}</h1>
-    <form action="{% url 'logout' %}">
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
         <button type="submit">Выйти из аккаунта</button>
     </form>
+    {% else %}
+    <h1>Сначала войдите в аккаунт что бы просматревать эту страницу</h1>
+    {% endif %}
 </div>
 {% endblock %}

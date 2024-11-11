@@ -126,8 +126,8 @@ STATICFILES_DIRS = [
     (BASE_DIR / 'static/'),
 ]
 
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+
+CAPTCHA_IMAGE_SIZE = (100, 40)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

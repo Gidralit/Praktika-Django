@@ -4,15 +4,12 @@
   <form method="post">
     {% csrf_token %}
     {{user_form.as_p}}
-      <div class="">
-          {{ form.captcha.image_base64|safe }}
-      </div>
     <button type="submit">Зарегистрироваться</button>
+          {% if user_form.errors %}
+            {% for error in user_form.errors %}
+                {{error}}
+            {% endfor %}
+          {% endif %}
   </form>
-      {% if user_form.non_field_errors %}
-      {% for error in user_form.non_field_errors %}
-        <p style="color: red;">{{error}}</p>
-      {% endfor %}
-    {% endif %}
 </div>
 {% endblock %}
