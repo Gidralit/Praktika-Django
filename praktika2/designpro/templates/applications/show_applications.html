@@ -1,0 +1,17 @@
+{% extends 'index.html' %}
+{% block content %}
+  <div class="applications-container">
+    <h1>Мои заявки</h1>
+    {% if applications %}
+      {% for application in applications %}
+        <h2>{{application.title}}</h2>
+        <p>{{application.description}}</p>
+        <p>Категория: {{application.category}}</p>
+        <img src="{{application.photo.url}}" alt="Photo" style="width: 100px;">
+
+      {% endfor %}
+    {% else %}
+      <p>У вас нет созданных заявок</p>
+    {% endif %}
+  </div>
+{% endblock %}

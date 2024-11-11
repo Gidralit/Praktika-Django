@@ -11,6 +11,10 @@
     <h1><a href="{% url 'home' %}">DESIGN.PRO</a></h1>
       <ul>
           <li><a href="{% url 'home' %}">Главная страница</a></li>
+          {% if user.is_authenticated %}
+          <li><a href="{% url 'create-application' %}">Создать заявку</a></li>
+          <li><a href="{% url 'show-applications' %}">Мои заявки</a></li>
+          {% endif %}
       </ul>
     <div class="login-out">{% if user.username %}<a href="{% url 'profile' %}">{{user.username}}</a>{% else %}<a href="{% url 'login' %}">Авторизация</a>/<a href="{% url 'register' %}">Регистрация</a>{% endif %}</div>
   </header>

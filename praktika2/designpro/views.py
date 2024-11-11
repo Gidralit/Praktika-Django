@@ -1,10 +1,14 @@
 from audioop import reverse
 
-from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.db.transaction import commit
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.urls import reverse_lazy
 
-from .forms import RegistrationForm
+from .forms import RegistrationForm, ApplicationForm
+from .models import Categories, Application
+
 from django.contrib.auth.views import LoginView, LogoutView
 import random
 
@@ -48,5 +52,36 @@ def register_view(request):
 
 def profile_view(request):
     return render(request, 'profile/profile.html', )
+
+@login_required
+def create_application_view(request):
+    if request.method == 'POST':
+        form = ApplicationForm(request.POST, request.FILES)
+        if form.is_valid():
+            application = form.save(commit=False)
+            print(f'форма: {form}')
+            print(application)
+            application.user = request.user
+            application.save()
+            messages.success(request, 'Вы успешно оставили заявку')
+            return redirect('home')
+        else:
+            print('Форма не валидна')
+    else:
+        form = ApplicationForm()
+    return render(request, 'applications/create_application.html', {'form': form})
+
+@login_required
+def show_applications_view(request):
+    applications = Application.objects.filter(user=request.user).all()
+    return render(request, 'applications/show_applications.html', {'applications': applications})
+
+@login_required
+def delete_application_view(request):
+    application = get_object_or_404(Application, id = request.application.id, user=request.user)
+
+    if request.method == 'POST':
+        application.delete()
+        messages.success(request, 'Ваша заявка успешно удалена')
 
 # Create your views here.

@@ -1,0 +1,11 @@
+{% extends 'index.html' %}
+{% block content %}
+    <div class="application-create-container">
+        <h1>Создание заявки</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{form.as_p}}
+            <button type="submit">Оставить заявку</button>
+        </form>
+    </div>
+{% endblock %}

@@ -1,8 +1,35 @@
+import os.path
+
 from django.core.exceptions import ValidationError
 from django import forms
+from django.db.transaction import clean_savepoints
 
-from .models import CustomUser
+from .models import CustomUser, Application
 from .validators import validator_cyrillic, validator_password, validator_login
+
+class ApplicationForm(forms.ModelForm):
+    class Meta:
+        model = Application
+        fields = [
+            'title',
+            'description',
+            'category',
+            'photo',
+        ]
+
+    def clean(self):
+        cleaned_data = super().clean()
+        photo = cleaned_data.get('photo')
+        if photo:
+            if photo.size > 2*1024*1024:
+                raise forms.ValidationError('Ваше фото слишком большое, максимальный размер 2МБ')
+
+            valid_extensions = ['.jpg', 'jpeg', 'png', 'bmp']
+            ext = os.path.splitext(photo.name)[1].lower()
+
+            if ext not in valid_extensions:
+                raise ValidationError('Расширение вашего файла не поддерживается, поддерживаемые: jpg, png, jpeg, bmp')
+        return cleaned_data
 
 class RegistrationForm(forms.ModelForm):
     password1 = forms.CharField(widget=forms.PasswordInput)
