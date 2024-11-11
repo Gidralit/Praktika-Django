@@ -1,4 +1,5 @@
 import os.path
+from cProfile import label
 
 from django.core.exceptions import ValidationError
 from django import forms
@@ -6,6 +7,17 @@ from django.db.transaction import clean_savepoints
 
 from .models import CustomUser, Application
 from .validators import validator_cyrillic, validator_password, validator_login
+
+class SearchForm(forms.Form):
+    query = forms.CharField(label = 'Поиск', max_length=100, required=False, widget=forms.TextInput(attrs={
+        'placeholder': 'Введите текст для поиска...',
+    }))
+    start_date = forms.DateField(label='Дата начала', required=False, widget=forms.DateInput(attrs={
+        'type':'date',
+    }))
+    end_date = forms.DateField(label='Дата окончания', required=False, widget=forms.DateInput(attrs={
+        'type': 'date',
+    }))
 
 class ApplicationForm(forms.ModelForm):
     class Meta:
@@ -15,21 +27,35 @@ class ApplicationForm(forms.ModelForm):
             'description',
             'category',
             'photo',
+            'start_date',
+            'end_date',
         ]
+        exclude = []
 
     def clean(self):
         cleaned_data = super().clean()
         photo = cleaned_data.get('photo')
-        if photo:
-            if photo.size > 2*1024*1024:
-                raise forms.ValidationError('Ваше фото слишком большое, максимальный размер 2МБ')
 
-            valid_extensions = ['.jpg', 'jpeg', 'png', 'bmp']
-            ext = os.path.splitext(photo.name)[1].lower()
+        if photo is None:
+            raise forms.ValidationError('Загрузите файла изображения')
 
-            if ext not in valid_extensions:
-                raise ValidationError('Расширение вашего файла не поддерживается, поддерживаемые: jpg, png, jpeg, bmp')
+        if photo.size > 2*1024*1024:
+            raise forms.ValidationError('Ваше изображение слишком большое, максимальный размер 2МБ')
+
+        valid_extensions = ['.jpg', '.jpeg', '.png', '.bmp']
+        ext = os.path.splitext(photo.name)[1].lower()
+        if ext not in valid_extensions:
+            raise forms.ValidationError('Недопустимое расширение файла. Поддерживаемые форматы: .jpg, .jpeg, .png, .bmp')
         return cleaned_data
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(ApplicationForm, self).__init__(*args, **kwargs)
+
+        if user and user.is_staff:
+            self.fields['status'] = forms.ChoiceField(choices=Application.STATUS_CHOICES)
+        else:
+            self.fields.pop('status', None)
 
 class RegistrationForm(forms.ModelForm):
     password1 = forms.CharField(widget=forms.PasswordInput)

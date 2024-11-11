@@ -13,4 +13,6 @@ urlpatterns = [
     path('home/', views.home_view, name='home'),
     path('applications/create-application', views.create_application_view, name='create-application'),
     path('applications/my-applications', views.show_applications_view, name='show-applications'),
+    path('applications/delete-application/<int:application_id>/', views.delete_application_view, name='delete-application'),
+    path('applications/edit-application/<int:application_id>/', views.edit_application_view, name='edit-application'),
 ]

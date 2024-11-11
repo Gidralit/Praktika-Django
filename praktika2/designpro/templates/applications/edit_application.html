@@ -1,0 +1,12 @@
+{% extends 'index.html' %}
+{% block content %}
+  <div class="edit-application-container">
+      <h1>Редактирование заявки</h1>
+      <p>Заявка: {{application.title}}</p>
+      <form method="post" action="{% url 'edit-application' application.id %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Применить изменения</button>
+      </form>
+  </div>
+{% endblock %}

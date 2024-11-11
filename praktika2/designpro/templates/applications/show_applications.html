@@ -1,14 +1,30 @@
 {% extends 'index.html' %}
 {% block content %}
   <div class="applications-container">
-    <h1>Мои заявки</h1>
+    {% if user.is_staff %}
+      <h1>Все заявки</h1>
+    {% else %}
+      <h1>Мои заявки</h1>
+    {% endif %}
+
+    <form method="get" action="{% url 'show-applications' %}">
+      {{form.as_p}}
+      <button type="submit">Поиск</button>
+    </form>
+
     {% if applications %}
       {% for application in applications %}
         <h2>{{application.title}}</h2>
         <p>{{application.description}}</p>
         <p>Категория: {{application.category}}</p>
+        <p>Статус заявки: {{application.get_status_display}}</p>
+        <p>Дата начала: {{application.start_date}}</p>
+        <p>Дата конца: {{application.end_date}}</p>
         <img src="{{application.photo.url}}" alt="Photo" style="width: 100px;">
-
+        <a href="{% url 'delete-application' application.id %}">Удалить заявку</a>
+        {% if user.is_staff %}
+        <a href="{% url 'edit-application' application.id %}">Редактировать заявку</a>
+        {% endif %}
       {% endfor %}
     {% else %}
       <p>У вас нет созданных заявок</p>

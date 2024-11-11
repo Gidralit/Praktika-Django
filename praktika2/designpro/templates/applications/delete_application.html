@@ -1,0 +1,12 @@
+{% extends 'index.html' %}
+{% block content %}
+  <div class="delete-application-container">
+      <h1>Удалить заявку</h1>
+      <p>Вы действительно хотите удалить заявку {{application.title}}?</p>
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit">Удалить заявку</button>
+        <a href="{% url 'home' %}">Отменить</a>
+      </form>
+  </div>
+{% endblock %}
