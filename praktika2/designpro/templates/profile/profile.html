@@ -7,6 +7,16 @@
         {% csrf_token %}
         <button type="submit">Выйти из аккаунта</button>
     </form>
+    <h2>Ваши заявки отправленные на доработку</h2>
+    {% if applications %}
+    {% for application in applications %}
+        <h3>Название заявки: {{application.title}}</h3>
+        <p>Комментарий администратора: {{application.comment}}</p>
+        <a href="{% url 'edit-application-user' application.id %}">Редактировать заявку</a>
+    {% endfor %}
+    {% else %}
+        <p>У вас нет заявок отправленных на доработку</p>
+    {% endif %}
     {% else %}
     <h1>Сначала войдите в аккаунт что бы просматревать эту страницу</h1>
     {% endif %}

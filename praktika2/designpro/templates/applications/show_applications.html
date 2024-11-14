@@ -14,16 +14,25 @@
 
     {% if applications %}
       {% for application in applications %}
-        <h2>{{application.title}}</h2>
-        <p>{{application.description}}</p>
-        <p>Категория: {{application.category}}</p>
-        <p>Статус заявки: {{application.get_status_display}}</p>
-        <p>Дата начала: {{application.start_date}}</p>
-        <p>Дата конца: {{application.end_date}}</p>
-        <img src="{{application.photo.url}}" alt="Photo" style="width: 100px;">
-        <a href="{% url 'delete-application' application.id %}">Удалить заявку</a>
-        {% if user.is_staff %}
-        <a href="{% url 'edit-application' application.id %}">Редактировать заявку</a>
+        {% if application.status != 'in_progress' %}
+          <h2>{{application.title}}</h2>
+          <p>{{application.description}}</p>
+          <p>Категория: {{application.category}}</p>
+          <p>Статус заявки: {{application.get_status_display}}</p>
+          {% if application.status == 'accepted_to_work' %}
+            <p>Комментарий дизигнира: {{application.comment}}</p>
+          {% endif %}
+          {% if application.status == 'done' %}
+              <p>Фотография результата</p>
+                <img src="{{application.additional_photo.url}}" alt="Photo" style="width: 100px;">
+          {% endif %}
+          <p>Дата начала: {{application.start_date}}</p>
+          <p>Дата конца: {{application.end_date}}</p>
+          <img src="{{application.photo.url}}" alt="Photo" style="width: 100px;">
+          <a href="{% url 'delete-application' application.id %}">Удалить заявку</a>
+          {% if user.is_staff %}
+          <a href="{% url 'edit-application' application.id %}">Редактировать заявку</a>
+          {% endif %}
         {% endif %}
       {% endfor %}
     {% else %}

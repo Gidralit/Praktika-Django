@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django import forms
 from django.db.transaction import clean_savepoints
 
-from .models import CustomUser, Application
+from .models import CustomUser, Application, Categories
 from .validators import validator_cyrillic, validator_password, validator_login
 
 class SearchForm(forms.Form):
@@ -20,6 +20,9 @@ class SearchForm(forms.Form):
     }))
 
 class ApplicationForm(forms.ModelForm):
+    # comment = forms.CharField(required=False)
+    # additional_photo = forms.ImageField(required=False)
+
     class Meta:
         model = Application
         fields = [
@@ -29,33 +32,58 @@ class ApplicationForm(forms.ModelForm):
             'photo',
             'start_date',
             'end_date',
+            # 'additional_photo',
+            # 'comment',
         ]
-        exclude = []
+
 
     def clean(self):
         cleaned_data = super().clean()
+
         photo = cleaned_data.get('photo')
-
         if photo is None:
-            raise forms.ValidationError('Загрузите файла изображения')
+            raise forms.ValidationError('Загрузите файл изображения')
 
-        if photo.size > 2*1024*1024:
+        if photo.size > 2 * 1024 * 1024:
             raise forms.ValidationError('Ваше изображение слишком большое, максимальный размер 2МБ')
 
         valid_extensions = ['.jpg', '.jpeg', '.png', '.bmp']
         ext = os.path.splitext(photo.name)[1].lower()
         if ext not in valid_extensions:
             raise forms.ValidationError('Недопустимое расширение файла. Поддерживаемые форматы: .jpg, .jpeg, .png, .bmp')
+
         return cleaned_data
 
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
         super(ApplicationForm, self).__init__(*args, **kwargs)
 
-        if user and user.is_staff:
-            self.fields['status'] = forms.ChoiceField(choices=Application.STATUS_CHOICES)
-        else:
-            self.fields.pop('status', None)
+
+class EditStatusForm(forms.ModelForm):
+    status = forms.ChoiceField(choices=Application.STATUS_CHOICES)
+    additional_photo = forms.ImageField(required=False)
+    comment = forms.CharField(required=False)
+    class Meta:
+        model = Application
+        fields = ['status', 'additional_photo', 'comment']
+
+    def __init__(self, *args, user=None, **kwargs):
+        super(EditStatusForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        status = cleaned_data.get('status')
+        comment = cleaned_data.get('comment')
+
+        if status == 'in_progress' and not comment:
+            raise forms.ValidationError('Комментарий обяязателен если вы отправляете заявку на доработку')
+
+        return cleaned_data
+
+class EditUserApplicationForm(forms.ModelForm):
+    class Meta:
+        model = Application
+        fields = ['title', 'description', 'photo', 'start_date', 'end_date', 'category']
+
 
 class RegistrationForm(forms.ModelForm):
     password1 = forms.CharField(widget=forms.PasswordInput)
@@ -79,9 +107,6 @@ class RegistrationForm(forms.ModelForm):
             'username': 'Логин',
             'email': 'Почта',
         }
-    
-    def get_captcha_image(self):
-        return self.fields['captcha'].generate_image()
 
     def clean(self):
         cleaned_data = super().clean()
@@ -114,5 +139,13 @@ class RegistrationForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
+class CategoriesForm(forms.ModelForm):
+    class Meta:
+        model = Categories
+        fields = ['name']
+        labels = {
+            'name': 'Название категории'
+        }
 
 

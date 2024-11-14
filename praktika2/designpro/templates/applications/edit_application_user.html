@@ -1,0 +1,12 @@
+{% extends 'index.html' %}
+{% block content %}
+    <div class="edit-application-user-container">
+        <h2>Редактирование заявки: {{application.title}}</h2>
+        <p>Комментарий администратора: {{application.comment}}</p>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Отредактировать заявку</button>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'index.html' %}
+{% block content %}
+    <div class="categories-list-container">
+        <h1>Категории</h1>
+        <a href="{% url 'create-category' %}">Добавить категорию</a>
+        {% if categories %}
+            {% for category in categories %}
+                <p>Название: {{category.name}} <a href="{% url 'delete-category' category.id %}">Удалить категорию</a></p>
+            {% endfor %}
+        {% else %}
+            <h2>Пока что еще нет категорий((</h2>
+        {% endif %}
+    </div>
+{% endblock %}

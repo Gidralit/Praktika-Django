@@ -1,0 +1,10 @@
+{% extends 'index.html' %}
+{% block content %}
+  <div class="delete-category-container">
+    <form method="post">
+      {% csrf_token %}
+      <p>Вы действительно хотите удалить категорию?</p>
+      <button type="submit">Удалить</button>
+    </form>
+  </div>
+{% endblock %}

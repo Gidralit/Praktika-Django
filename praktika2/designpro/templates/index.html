@@ -14,6 +14,9 @@
           {% if user.is_authenticated %}
           <li><a href="{% url 'create-application' %}">Создать заявку</a></li>
           <li><a href="{% url 'show-applications' %}">Мои заявки</a></li>
+          {% if user.is_staff %}
+          <li><a href="{% url 'categories-list' %}">Список категорий</a></li>
+          {% endif %}
           {% endif %}
       </ul>
     <div class="login-out">{% if user.username %}<a href="{% url 'profile' %}">{{user.username}}</a>{% else %}<a href="{% url 'login' %}">Авторизация</a>/<a href="{% url 'register' %}">Регистрация</a>{% endif %}</div>

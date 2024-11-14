@@ -15,4 +15,8 @@ urlpatterns = [
     path('applications/my-applications', views.show_applications_view, name='show-applications'),
     path('applications/delete-application/<int:application_id>/', views.delete_application_view, name='delete-application'),
     path('applications/edit-application/<int:application_id>/', views.edit_application_view, name='edit-application'),
+    path('applications/edit-application-user/<int:application_id>/', views.user_edit_application_view, name='edit-application-user'),
+    path('categories/categories-list/', views.categories_list_view, name='categories-list'),
+    path('categories/create-category/', views.create_category_view, name='create-category'),
+    path('categories/delete-category/<int:category_id>', views.delete_category_view, name='delete-category')
 ]

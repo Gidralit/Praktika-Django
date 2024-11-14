@@ -3,10 +3,34 @@
   <div class="edit-application-container">
       <h1>Редактирование заявки</h1>
       <p>Заявка: {{application.title}}</p>
-      <form method="post" action="{% url 'edit-application' application.id %}">
+      <form method="post" action="{% url 'edit-application' application.id %}" enctype="multipart/form-data"x>
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Применить изменения</button>
+        {{form.status.label}}{{form.status}}
+            <div id="additional-photo-container" style="display: none;">
+                {{form.additional_photo.label}} {{form.additional_photo}}
+            </div>
+          <div id="comment-container" style="display:none;">
+              {{form.comment.label}} {{form.comment}}
+          </div>
+            <div id="edit-comment-container" style="display:none;">
+              {{form.comment.label}} {{form.comment}}
+            </div>
+          <button type="submit">Применить изменения</button>
       </form>
   </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const statusSelect = document.getElementById('id_status');
+        const additionalPhotoContainer = document.getElementById('additional-photo-container')
+        const commentContainer = document.getElementById('comment-container')
+        const editCommentContainer = document.getElementById('edit-comment-container')
+        function toggleAdditionalPhotoField(){
+            additionalPhotoContainer.style.display = (statusSelect.value === 'done') ? 'block' : 'none';
+            commentContainer.style.display = (statusSelect.value === 'accepted_to_work') ? 'block' : 'none';
+            editCommentContainer.style.display = (statusSelect.value === 'in_progress') ? 'block' : 'none';
+        }
+        toggleAdditionalPhotoField();
+        statusSelect.addEventListener('change', toggleAdditionalPhotoField);
+    })
+</script>
 {% endblock %}

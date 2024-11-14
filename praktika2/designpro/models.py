@@ -1,11 +1,12 @@
 from email.policy import default
 
+from PIL.ImageFont import truetype
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.cache.backends.base import default_key_func
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import ForeignKey
+from django.db.models import ForeignKey, CASCADE
 
 from datetime import datetime
 
@@ -33,15 +34,18 @@ class Application(models.Model):
         ('accepted_to_work', 'Принято в работу'),
         ('done', 'Выполнено'),
         ('new', 'Новая'),
+        ('in_progress', 'На доработке'),
     ]
     title = models.CharField(max_length=100)
     description = models.TextField()
-    category = ForeignKey(Categories, on_delete=models.SET_NULL, null=True)
+    category = ForeignKey(Categories, on_delete=CASCADE, null=True)
     photo = models.ImageField(upload_to='photos/', blank=False, null=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False)
     start_date = models.DateTimeField(default=datetime.now)
     end_date = models.DateTimeField(null=False, blank=False)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new')
+    additional_photo = models.ImageField(upload_to='additional_photo/', blank=True, null=True)
+    comment = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.title
@@ -52,4 +56,6 @@ class Application(models.Model):
                 raise ValidationError('Дата окончания не может быть раньше даты начала')
             elif self.start_date > self.end_date:
                 raise ValidationError('Дата начала не может быть позже даты конца')
+
+
 # Create your models here.
